@@ -5,10 +5,22 @@ const {
   getProducts,
   getProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  searchProducts,
+  getCategories,
+  getProductsByCategory,
+  getFeaturedProducts,
+  getProductStats
 } = require('../controllers/productController');
 
-// All routes - no middleware for now
+// Search and filter routes (must come before /:id)
+router.get('/search', searchProducts);
+router.get('/categories', getCategories);
+router.get('/featured', getFeaturedProducts);
+router.get('/stats', getProductStats);
+router.get('/category/:category', getProductsByCategory);
+
+// CRUD routes
 router.post('/', createProduct);
 router.get('/', getProducts);
 router.get('/:id', getProduct);
