@@ -52,6 +52,10 @@ app.get('/', (req, res) => {
 // Product routes
 app.use('/api/v1/products', require('./routes/productRoutes'));
 
+// Order routes
+app.use('/api/v1/orders', require('./routes/orderRoutes'));
+
+
 // Test route
 app.post('/test', (req, res) => {
   res.json({
