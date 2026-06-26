@@ -1,16 +1,19 @@
 const { body, validationResult } = require('express-validator');
 
+// Simple validation middleware
 const validate = (req, res, next) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      success: false,
-      errors: errors.array()
-    });
+  if (errors.isEmpty()) {
+    next();
+    return;
   }
-  next();
+  res.status(400).json({
+    success: false,
+    errors: errors.array().map(err => err.msg)
+  });
 };
 
+// Validation rules
 const registerValidation = [
   body('name')
     .trim()
@@ -21,8 +24,7 @@ const registerValidation = [
     .toLowerCase()
     .isEmail().withMessage('Please provide a valid email address'),
   body('password')
-    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
-    .matches(/^(?=.*[A-Za-z])(?=.*\d)/).withMessage('Password must contain at least one letter and one number'),
+    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
   body('confirmPassword')
     .custom((value, { req }) => value === req.body.password)
     .withMessage('Passwords do not match'),
@@ -49,8 +51,7 @@ const forgotPasswordValidation = [
 
 const resetPasswordValidation = [
   body('password')
-    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
-    .matches(/^(?=.*[A-Za-z])(?=.*\d)/).withMessage('Password must contain at least one letter and one number'),
+    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
   body('confirmPassword')
     .custom((value, { req }) => value === req.body.password)
     .withMessage('Passwords do not match'),
@@ -62,9 +63,6 @@ const updateProfileValidation = [
     .optional()
     .trim()
     .isLength({ min: 2, max: 50 }).withMessage('Name must be between 2 and 50 characters'),
-  body('profile.phone')
-    .optional()
-    .matches(/^[0-9]{10}$/).withMessage('Phone number must be 10 digits'),
   validate
 ];
 
