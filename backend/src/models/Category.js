@@ -9,11 +9,15 @@ const categorySchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    unique: true,
     lowercase: true
   },
-  description: String,
-  image: String,
+  description: {
+    type: String,
+    maxlength: 500
+  },
+  image: {
+    type: String
+  },
   parentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
@@ -40,15 +44,5 @@ const categorySchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Create slug before saving
-categorySchema.pre('save', function(next) {
-  if (this.isModified('name')) {
-    this.slug = this.name
-      .toLowerCase()
-      .replace(/[^\w\s]/g, '')
-      .replace(/\s+/g, '-');
-  }
-  next();
-});
-
+// Remove pre-save middleware - generate slug in controller instead
 module.exports = mongoose.model('Category', categorySchema);

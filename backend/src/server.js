@@ -55,6 +55,8 @@ app.use('/api/v1/products', require('./routes/productRoutes'));
 // Order routes
 app.use('/api/v1/orders', require('./routes/orderRoutes'));
 
+// Category routes
+app.use('/api/v1/categories', require('./routes/categoryRoutes'));
 
 // Test route
 app.post('/test', (req, res) => {
