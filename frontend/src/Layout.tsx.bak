@@ -1,0 +1,182 @@
+import React, { ReactNode } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Container,
+  Box,
+  Button,
+  IconButton,
+  Badge,
+  InputBase,
+  useScrollTrigger,
+} from '@mui/material';
+import { styled, alpha } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
+import { colors } from '../../theme';
+import SearchIcon from '@mui/icons-material/Search';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import { motion } from 'framer-motion';
+
+interface LayoutProps {
+  children: ReactNode;
+}
+
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: 30,
+  backgroundColor: alpha(colors.dustyRose, 0.08),
+  '&:hover': {
+    backgroundColor: alpha(colors.dustyRose, 0.15),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(3),
+    width: 'auto',
+  },
+  transition: 'all 0.3s ease',
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: colors.lightText,
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  width: '100%',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1.5, 1, 1.5, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '30ch',
+    },
+  },
+}));
+
+const NavButton = styled(Button)({
+  borderRadius: 30,
+  padding: '8px 20px',
+  textTransform: 'none',
+  fontWeight: 500,
+  color: colors.darkText,
+  '&:hover': {
+    background: 'rgba(239, 165, 182, 0.12)',
+  },
+});
+
+const LogoText = styled(Typography)({
+  fontFamily: '"Playfair Display", serif',
+  fontWeight: 700,
+  fontSize: '1.8rem',
+  background: 'linear-gradient(135deg, #EFA5B6 0%, #FFC6A8 50%, #DCC8FF 100%)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  textDecoration: 'none',
+  letterSpacing: '-0.5px',
+});
+
+function ElevationScroll({ children }: { children: React.ReactElement }) {
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 0,
+  });
+
+  return React.cloneElement(children, {
+    elevation: trigger ? 4 : 0,
+    sx: {
+      background: trigger ? 'rgba(255, 249, 245, 0.92)' : 'rgba(255, 249, 245, 0.85)',
+    },
+  });
+}
+
+const Layout: React.FC<LayoutProps> = ({ children }) => {
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#FFF9F5' }}>
+      <ElevationScroll>
+        <AppBar position="sticky" color="transparent" elevation={0}>
+          <Toolbar sx={{ py: 1 }}>
+            <LogoText component={Link} to="/" sx={{ flexGrow: 1, textDecoration: 'none' }}>
+              Fruité
+            </LogoText>
+
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search for fruits, treats..."
+                inputProps={{ 'aria-label': 'search' }}
+              />
+            </Search>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <NavButton component={Link} to="/products">
+                Shop
+              </NavButton>
+              <IconButton component={Link} to="/wishlist" sx={{ color: colors.darkText }}>
+                <FavoriteBorderIcon />
+              </IconButton>
+              <IconButton component={Link} to="/cart" sx={{ color: colors.darkText }}>
+                <Badge badgeContent={3} sx={{ '& .MuiBadge-badge': { bgcolor: colors.strawberryRed, color: 'white' } }}>
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
+              <IconButton component={Link} to="/profile" sx={{ color: colors.darkText }}>
+                <PersonOutlineIcon />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </ElevationScroll>
+
+      <Container component="main" sx={{ flex: 1, py: 4, maxWidth: '1400px' }}>
+        {children}
+      </Container>
+
+      <Box component="footer" sx={{ py: 4, mt: 'auto', bgcolor: 'rgba(239, 165, 182, 0.06)', borderTop: '1px solid rgba(239, 165, 182, 0.12)' }}>
+        <Container maxWidth="lg">
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 4 }}>
+            <Box>
+              <Typography variant="h6" fontFamily='"Playfair Display", serif' color="primary">
+                Fruité
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 300 }}>
+                Premium fruits and treats delivered with love. Fresh, elegant, and delightful.
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" fontWeight={600}>Quick Links</Typography>
+              <Typography variant="body2" color="text.secondary">Shop All</Typography>
+              <Typography variant="body2" color="text.secondary">About Us</Typography>
+              <Typography variant="body2" color="text.secondary">Contact</Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" fontWeight={600}>Follow Us</Typography>
+              <Typography variant="body2" color="text.secondary">Instagram</Typography>
+              <Typography variant="body2" color="text.secondary">Pinterest</Typography>
+              <Typography variant="body2" color="text.secondary">TikTok</Typography>
+            </Box>
+          </Box>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 3, textAlign: 'center' }}>
+            © 2026 Fruité. All rights reserved.
+          </Typography>
+        </Container>
+      </Box>
+    </Box>
+  );
+};
+
+export default Layout;
