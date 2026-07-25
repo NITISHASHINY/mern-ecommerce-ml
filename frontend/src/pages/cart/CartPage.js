@@ -1,31 +1,3 @@
-const getProductEmoji = (name) => {
-  const emojis = {
-    'laptop': '💻',
-    'phone': '📱',
-    'book': '📚',
-    'tshirt': '👕',
-    'shirt': '👔',
-    'shoes': '👟',
-    'bag': '👜',
-    'watch': '⌚',
-    'headphones': '🎧',
-    'camera': '📷',
-    'electronics': '📱',
-    'clothing': '👕',
-    'books': '📚',
-    'beauty': '💄',
-    'home': '🏠',
-  };
-  const lowerName = name?.toLowerCase() || '';
-  for (const [key, emoji] of Object.entries(emojis)) {
-    if (lowerName.includes(key)) return emoji;
-  }
-  return '🍓';
-};
-
-
-
-
 import React from 'react';
 import {
   Box,
@@ -43,6 +15,42 @@ import { Add, Remove, DeleteOutline } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { motion } from 'framer-motion';
+
+// Helper function for product emoji
+const getProductEmoji = (name) => {
+  const emojis = {
+    'laptop': '💻',
+    'phone': '📱',
+    'book': '📚',
+    'tshirt': '👕',
+    'shirt': '👔',
+    'shoes': '👟',
+    'bag': '👜',
+    'watch': '⌚',
+    'headphones': '🎧',
+    'camera': '📷',
+    'electronics': '📱',
+    'clothing': '👕',
+    'books': '📚',
+    'beauty': '💄',
+    'home': '🏠',
+    'sports': '⚽',
+    'toys': '🧸',
+    'automotive': '🚗',
+    'strawberry': '🍓',
+    'peach': '🍑',
+    'cherry': '🍒',
+    'grape': '🍇',
+    'orange': '🍊',
+    'apple': '🍎',
+  };
+  
+  const lowerName = name?.toLowerCase() || '';
+  for (const [key, emoji] of Object.entries(emojis)) {
+    if (lowerName.includes(key)) return emoji;
+  }
+  return '🍓';
+};
 
 const CartPage = () => {
   const { cartItems, updateQuantity, removeFromCart, getTotalPrice } = useCart();
@@ -80,14 +88,15 @@ const CartPage = () => {
               component={motion.div}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              sx={{ mb: 2, display: 'flex', alignItems: 'center', p: 2 }}
+              sx={{ mb: 2, display: 'flex', alignItems: 'center', p: 2, borderRadius: 4 }}
             >
               <CardMedia
-  component="img"
-  image={item.images?.[0] || `https://via.placeholder.com/80/FFF5F0/EFA5B6?text=${getProductEmoji(item.name)}`}
-  alt={item.name}
-  sx={{ width: 80, height: 80, borderRadius: 2, objectFit: 'cover' }}
-/>              <CardContent sx={{ flex: 1 }}>
+                component="img"
+                image={item.images?.[0] || `https://via.placeholder.com/80/FFF5F0/EFA5B6?text=${getProductEmoji(item.name)}`}
+                alt={item.name}
+                sx={{ width: 80, height: 80, borderRadius: 2, objectFit: 'cover' }}
+              />
+              <CardContent sx={{ flex: 1 }}>
                 <Typography variant="h6" fontFamily='"Playfair Display", serif'>
                   {item.name}
                 </Typography>
