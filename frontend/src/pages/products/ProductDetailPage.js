@@ -1,17 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { Typography, Box, Button, Grid, Paper, CircularProgress } from '@mui/material';
+import { 
+  Typography, 
+  Box, 
+  Button, 
+  Grid, 
+  Paper, 
+  CircularProgress,
+  IconButton,
+  Snackbar,
+  Alert,
+} from '@mui/material';
+import { Add, Remove } from '@mui/icons-material';
 import { productAPI } from '../../services/api';
+import { useCart } from '../../context/CartContext';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
+  const [quantity, setQuantity] = useState(1);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const { addToCart } = useCart();
 
   const { data, isLoading, error } = useQuery(
     ['product', id],
     () => productAPI.getById(id),
     { enabled: !!id }
   );
+
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart(product, quantity);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleQuantityChange = (type) => {
+    if (type === 'increase') {
+      setQuantity(prev => prev + 1);
+    } else if (type === 'decrease' && quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -68,21 +98,56 @@ const ProductDetailPage = () => {
             Category: {product.category || 'Uncategorized'}
           </Typography>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            SKU: {product.sku}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
             Stock: {product.inventory?.quantity > 0 ? `${product.inventory.quantity} available` : 'Out of stock'}
           </Typography>
+
+          {/* Quantity Selector */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 3 }}>
+            <IconButton 
+              onClick={() => handleQuantityChange('decrease')}
+              disabled={quantity <= 1}
+              sx={{ border: '1px solid #EFA5B6', borderRadius: 2 }}
+            >
+              <Remove />
+            </IconButton>
+            <Typography variant="h6" sx={{ minWidth: 40, textAlign: 'center' }}>
+              {quantity}
+            </Typography>
+            <IconButton 
+              onClick={() => handleQuantityChange('increase')}
+              disabled={product.inventory?.quantity <= quantity}
+              sx={{ border: '1px solid #EFA5B6', borderRadius: 2 }}
+            >
+              <Add />
+            </IconButton>
+          </Box>
+
           <Button
             variant="contained"
             size="large"
             disabled={product.inventory?.quantity === 0}
-            sx={{ mt: 2 }}
+            onClick={handleAddToCart}
+            sx={{ mt: 3, px: 6 }}
           >
             Add to Cart
           </Button>
         </Grid>
       </Grid>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={() => setOpenSnackbar(false)} 
+          severity="success"
+          sx={{ borderRadius: 4 }}
+        >
+          {product.name} added to cart! 🍓
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

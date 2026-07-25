@@ -14,11 +14,10 @@ import {
 import { styled, alpha } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { colors } from '../../theme';
+import { useCart } from '../../context/CartContext';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import { motion } from 'framer-motion';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -99,6 +98,8 @@ function ElevationScroll({ children }) {
 }
 
 const Layout = ({ children }) => {
+  const { getTotalItems } = useCart();
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#FFF9F5' }}>
       <ElevationScroll>
@@ -122,11 +123,11 @@ const Layout = ({ children }) => {
               <NavButton component={Link} to="/products">
                 Shop
               </NavButton>
-              <IconButton component={Link} to="/wishlist" sx={{ color: colors.darkText }}>
-                <FavoriteBorderIcon />
-              </IconButton>
               <IconButton component={Link} to="/cart" sx={{ color: colors.darkText }}>
-                <Badge badgeContent={3} sx={{ '& .MuiBadge-badge': { bgcolor: colors.strawberryRed, color: 'white' } }}>
+                <Badge 
+                  badgeContent={getTotalItems()} 
+                  sx={{ '& .MuiBadge-badge': { bgcolor: colors.strawberryRed, color: 'white' } }}
+                >
                   <ShoppingCartIcon />
                 </Badge>
               </IconButton>
