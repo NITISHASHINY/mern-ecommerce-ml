@@ -1,18 +1,24 @@
 import React from 'react';
-import { Box, Typography, Button, Grid, Card, CardContent, CardMedia, Container } from '@mui/material';
+import { Box, Typography, Button, Grid, Card, CardContent, CardMedia, Container, CircularProgress } from '@mui/material';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { productAPI } from '../services/api';
 
 const fruits = ['🍓', '🍑', '🍒', '🍇', '🍊', '🍉'];
 
 const HomePage = () => {
+  const { data: featuredData, isLoading } = useQuery('featured', () => productAPI.getFeatured());
+
+  const featuredProducts = featuredData?.data?.data || [];
+
   return (
     <Box>
       {/* Hero Section */}
       <Box
         sx={{
           position: 'relative',
-          minHeight: '80vh',
+          minHeight: '70vh',
           display: 'flex',
           alignItems: 'center',
           background: 'linear-gradient(135deg, #FFF5F0 0%, #FFE8E0 30%, #F8D7DA 60%, #DCC8FF 100%)',
@@ -119,37 +125,60 @@ const HomePage = () => {
           Handpicked just for you
         </Typography>
 
-        <Grid container spacing={3}>
-          {[1, 2, 3, 4].map((item) => (
-            <Grid item xs={12} sm={6} md={3} key={item}>
-              <Card
-                component={motion.div}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-              >
-                <CardMedia
-                  component="img"
-                  height="220"
-                  image="https://via.placeholder.com/300x220/FFF5F0/EFA5B6?text=🍓"
-                  alt="Product"
-                  sx={{ objectFit: 'cover' }}
-                />
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" fontFamily='"Playfair Display", serif' gutterBottom>
-                    Fresh Strawberries
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    Premium organic strawberries from local farms.
-                  </Typography>
-                  <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h6" color="primary">$12.99</Typography>
-                    <Button variant="contained" size="small">View</Button>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+        {isLoading ? (
+          <Box display="flex" justifyContent="center" py={4}>
+            <CircularProgress sx={{ color: '#EFA5B6' }} />
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {featuredProducts.length > 0 ? (
+              featuredProducts.map((product) => (
+                <Grid item xs={12} sm={6} md={3} key={product._id}>
+                  <Card
+                    component={motion.div}
+                    whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                    sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+                  >
+                    <CardMedia
+                      component="img"
+                      height="220"
+                      image={product.images?.[0] || `https://via.placeholder.com/300x220/FFF5F0/EFA5B6?text=${product.emoji || '🍓'}`}
+                      alt={product.name}
+                      sx={{ objectFit: 'cover' }}
+                    />
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography variant="h6" fontFamily='"Playfair Display", serif' gutterBottom>
+                        {product.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        {product.description?.substring(0, 60)}...
+                      </Typography>
+                      <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <Typography variant="h6" color="primary">
+                          ${product.price.toFixed(2)}
+                        </Typography>
+                        <Button
+                          component={Link}
+                          to={`/product/${product._id}`}
+                          variant="contained"
+                          size="small"
+                        >
+                          View
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <Typography align="center" color="text.secondary">
+                  No featured products available
+                </Typography>
+              </Grid>
+            )}
+          </Grid>
+        )}
       </Box>
 
       {/* Categories */}
