@@ -4,3 +4,8 @@ dist/
 build/ 
 coverage/ 
 *.log 
+venv/ 
+__pycache__/ 
+*.pyc 
+models/ 
+data/ 
