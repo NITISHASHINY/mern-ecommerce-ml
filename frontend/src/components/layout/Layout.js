@@ -72,6 +72,19 @@ const NavButton = styled(Button)({
   },
 });
 
+const SignUpButton = styled(Button)({
+  borderRadius: 30,
+  padding: '8px 20px',
+  textTransform: 'none',
+  fontWeight: 500,
+  background: 'linear-gradient(135deg, #EFA5B6 0%, #FFC6A8 100%)',
+  color: '#FFFFFF',
+  '&:hover': {
+    transform: 'scale(1.03)',
+    boxShadow: '0 8px 25px rgba(239, 165, 182, 0.45)',
+  },
+});
+
 const LogoText = styled(Typography)({
   fontFamily: '"Playfair Display", serif',
   fontWeight: 700,
@@ -99,6 +112,8 @@ function ElevationScroll({ children }) {
 
 const Layout = ({ children }) => {
   const { getTotalItems } = useCart();
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const isLoggedIn = user.name ? true : false;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#FFF9F5' }}>
@@ -123,6 +138,22 @@ const Layout = ({ children }) => {
               <NavButton component={Link} to="/products">
                 Shop
               </NavButton>
+              
+              {isLoggedIn ? (
+                <IconButton component={Link} to="/profile" sx={{ color: colors.darkText }}>
+                  <PersonOutlineIcon />
+                </IconButton>
+              ) : (
+                <>
+                  <NavButton component={Link} to="/login">
+                    Sign In
+                  </NavButton>
+                  <SignUpButton component={Link} to="/register">
+                    Sign Up
+                  </SignUpButton>
+                </>
+              )}
+              
               <IconButton component={Link} to="/cart" sx={{ color: colors.darkText }}>
                 <Badge 
                   badgeContent={getTotalItems()} 
@@ -130,9 +161,6 @@ const Layout = ({ children }) => {
                 >
                   <ShoppingCartIcon />
                 </Badge>
-              </IconButton>
-              <IconButton component={Link} to="/profile" sx={{ color: colors.darkText }}>
-                <PersonOutlineIcon />
               </IconButton>
             </Box>
           </Toolbar>
@@ -156,15 +184,27 @@ const Layout = ({ children }) => {
             </Box>
             <Box>
               <Typography variant="subtitle2" fontWeight={600}>Quick Links</Typography>
-              <Typography variant="body2" color="text.secondary">Shop All</Typography>
-              <Typography variant="body2" color="text.secondary">About Us</Typography>
-              <Typography variant="body2" color="text.secondary">Contact</Typography>
+              <Typography variant="body2" color="text.secondary" component={Link} to="/products" sx={{ display: 'block', textDecoration: 'none' }}>
+                Shop All
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ display: 'block' }}>
+                About Us
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ display: 'block' }}>
+                Contact
+              </Typography>
             </Box>
             <Box>
               <Typography variant="subtitle2" fontWeight={600}>Follow Us</Typography>
-              <Typography variant="body2" color="text.secondary">Instagram</Typography>
-              <Typography variant="body2" color="text.secondary">Pinterest</Typography>
-              <Typography variant="body2" color="text.secondary">TikTok</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ display: 'block' }}>
+                Instagram
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ display: 'block' }}>
+                Pinterest
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ display: 'block' }}>
+                TikTok
+              </Typography>
             </Box>
           </Box>
         </Container>

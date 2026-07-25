@@ -210,3 +210,28 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+const getProductEmoji = (name) => {
+  const emojis = {
+    'laptop': '💻',
+    'phone': '📱',
+    'book': '📚',
+    'tshirt': '👕',
+    'shirt': '👔',
+    'shoes': '👟',
+    'bag': '👜',
+    'watch': '⌚',
+    'headphones': '🎧',
+    'camera': '📷',
+    'electronics': '📱',
+    'clothing': '👕',
+    'books': '📚',
+    'beauty': '💄',
+    'home': '🏠',
+  };
+  const lowerName = name?.toLowerCase() || '';
+  for (const [key, emoji] of Object.entries(emojis)) {
+    if (lowerName.includes(key)) return emoji;
+  }
+  return '🍓';
+};

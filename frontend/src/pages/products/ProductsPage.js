@@ -20,6 +20,51 @@ import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { productAPI } from '../../services/api';
 
+// Helper functions for product images
+const getProductEmoji = (name) => {
+  const emojis = {
+    'laptop': '💻',
+    'phone': '📱',
+    'book': '📚',
+    'tshirt': '👕',
+    'shirt': '👔',
+    'shoes': '👟',
+    'bag': '👜',
+    'watch': '⌚',
+    'headphones': '🎧',
+    'camera': '📷',
+    'gaming': '🎮',
+    'electronics': '📱',
+    'clothing': '👕',
+    'books': '📚',
+    'beauty': '💄',
+    'home': '🏠',
+    'sports': '⚽',
+    'toys': '🧸',
+    'automotive': '🚗',
+  };
+  
+  const lowerName = name?.toLowerCase() || '';
+  for (const [key, emoji] of Object.entries(emojis)) {
+    if (lowerName.includes(key)) return emoji;
+  }
+  return '🍓';
+};
+
+const getCategoryColor = (category) => {
+  const colors = {
+    'electronics': 'DCC8FF',
+    'clothing': 'FFC6A8',
+    'books': 'BFD8B8',
+    'beauty': 'F8D7DA',
+    'home': 'FFF5F0',
+    'sports': 'FFE8E0',
+    'toys': 'FFDDCC',
+    'automotive': 'E8D5B8',
+  };
+  return colors[category?.toLowerCase()] || 'FFF5F0';
+};
+
 const ProductsPage = () => {
   const [searchParams, setSearchParams] = useState({
     keyword: '',
@@ -97,6 +142,8 @@ const ProductsPage = () => {
               <MenuItem value="Electronics">Electronics</MenuItem>
               <MenuItem value="Clothing">Clothing</MenuItem>
               <MenuItem value="Books">Books</MenuItem>
+              <MenuItem value="Beauty">Beauty</MenuItem>
+              <MenuItem value="Home">Home</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -129,7 +176,7 @@ const ProductsPage = () => {
               <CardMedia
                 component="img"
                 height="220"
-                image={product.images?.[0] || `https://via.placeholder.com/300x220/FFF5F0/EFA5B6?text=🍓`}
+                image={product.images?.[0] || `https://via.placeholder.com/300x220/${getCategoryColor(product.category)}/FFF5F0?text=${getProductEmoji(product.name)}`}
                 alt={product.name}
                 sx={{ objectFit: 'cover' }}
               />
