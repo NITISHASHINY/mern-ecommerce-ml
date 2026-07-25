@@ -17,6 +17,10 @@ import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import ProfilePage from './pages/auth/ProfilePage';
 
+// Admin Pages
+import Dashboard from './pages/admin/Dashboard';
+import ProductManagement from './pages/admin/ProductManagement';
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -28,6 +32,7 @@ function App() {
           <Router>
             <Layout>
               <Routes>
+                {/* Public Routes */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/product/:id" element={<ProductDetailPage />} />
@@ -37,6 +42,10 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                
+                {/* Admin Routes */}
+                <Route path="/admin" element={<Dashboard />} />
+                <Route path="/admin/products" element={<ProductManagement />} />
               </Routes>
             </Layout>
           </Router>
