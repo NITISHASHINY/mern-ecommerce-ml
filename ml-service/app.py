@@ -255,3 +255,48 @@ def get_stats():
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5001))
     app.run(host='0.0.0.0', port=port, debug=True)
+@app.route('/recommend/personalized', methods=['POST'])
+def personalized_recommendations():
+    """Get personalized recommendations for a user"""
+    try:
+        data = request.json
+        user_id = data.get('user_id')
+        limit = data.get('limit', 10)
+        
+        # Get user's interaction history
+        interactions = list(interactions_collection.find(
+            {'user_id': user_id},
+            {'product_id': 1, 'type': 1}
+        ).sort('timestamp', -1).limit(20))
+        
+        if not interactions:
+            # Return popular products
+            return get_popular_products(limit)
+        
+        # Get products user interacted with
+        product_ids = [str(i['product_id']) for i in interactions]
+        product_ids = list(dict.fromkeys(product_ids))
+        
+        # Get similar products
+        all_recommendations = []
+        for pid in product_ids[:5]:
+            similar = get_similar_products(pid, limit=3)
+            all_recommendations.extend(similar)
+        
+        # Remove duplicates
+        seen = set()
+        unique_recommendations = []
+        for rec in all_recommendations:
+            if rec['_id'] not in seen and rec['_id'] not in product_ids:
+                seen.add(rec['_id'])
+                unique_recommendations.append(rec)
+        
+        return jsonify({
+            'success': True,
+            'data': unique_recommendations[:limit]
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500

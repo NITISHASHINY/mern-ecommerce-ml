@@ -1,4 +1,8 @@
 import React from 'react';
+import SearchBar from '../search/SearchBar';
+
+// In the toolbar, replace the search with:
+<SearchBar />
 import {
   AppBar,
   Toolbar,
