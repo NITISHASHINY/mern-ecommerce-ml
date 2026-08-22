@@ -1,19 +1,18 @@
 const { body, validationResult } = require('express-validator');
 
-// Simple validation middleware
+// Simple validation middleware - FIXED
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
-    next();
-    return;
+    return next();
   }
-  res.status(400).json({
+  return res.status(400).json({
     success: false,
-    errors: errors.array().map(err => err.msg)
+    errors: errors.array()
   });
 };
 
-// Validation rules
+// Registration validation
 const registerValidation = [
   body('name')
     .trim()
@@ -31,6 +30,7 @@ const registerValidation = [
   validate
 ];
 
+// Login validation
 const loginValidation = [
   body('email')
     .trim()
@@ -41,6 +41,7 @@ const loginValidation = [
   validate
 ];
 
+// Forgot password validation
 const forgotPasswordValidation = [
   body('email')
     .trim()
@@ -49,6 +50,7 @@ const forgotPasswordValidation = [
   validate
 ];
 
+// Reset password validation
 const resetPasswordValidation = [
   body('password')
     .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
@@ -58,18 +60,9 @@ const resetPasswordValidation = [
   validate
 ];
 
-const updateProfileValidation = [
-  body('name')
-    .optional()
-    .trim()
-    .isLength({ min: 2, max: 50 }).withMessage('Name must be between 2 and 50 characters'),
-  validate
-];
-
 module.exports = {
   registerValidation,
   loginValidation,
   forgotPasswordValidation,
   resetPasswordValidation,
-  updateProfileValidation
 };

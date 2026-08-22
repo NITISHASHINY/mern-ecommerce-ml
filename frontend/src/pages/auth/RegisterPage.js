@@ -26,6 +26,33 @@ const RegisterPage = () => {
     password: '',
     confirmPassword: '',
   });
+// Add to RegisterPage
+<Button
+  fullWidth
+  variant="outlined"
+  startIcon={<img src="google-icon.png" alt="Google" />}
+  sx={{ mb: 2 }}
+>
+  Sign up with Google
+</Button>
+<Button
+  fullWidth
+  variant="outlined"
+  startIcon={<img src="facebook-icon.png" alt="Facebook" />}
+  sx={{ mb: 2 }}
+>
+  Sign up with Facebook
+</Button>
+<Button
+  fullWidth
+  variant="outlined"
+  startIcon={<img src="apple-icon.png" alt="Apple" />}
+  sx={{ mb: 2 }}
+>
+  Sign up with Apple
+</Button>
+<Divider>OR</Divider>
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

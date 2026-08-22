@@ -1,32 +1,50 @@
+console.log('AUTH CONTROLLER LOADED - SIMPLIFIED');
+
 const User = require('../models/User');
-const { generateTokens } = require('../utils/jwtHelper');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+
+const generateToken = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_SECRET || 'secret', {
+    expiresIn: '7d',
+  });
+};
 
 const register = async (req, res) => {
   try {
+    console.log('Register called');
     const { name, email, password } = req.body;
-    
-    // Check if user exists
+
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required',
+      });
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'User already exists with this email'
+        message: 'User already exists',
       });
     }
-    
-    // Create user
+
+    // Hash password
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const user = new User({
       name,
       email,
-      password
+      password: hashedPassword,
     });
-    
+
     await user.save();
-    
-    // Generate tokens
-    const { accessToken, refreshToken } = generateTokens(user._id, user.role);
-    
+    console.log('User saved:', user._id);
+
+    const token = generateToken(user._id);
+
     res.status(201).json({
       success: true,
       message: 'Registration successful',
@@ -35,54 +53,53 @@ const register = async (req, res) => {
           id: user._id,
           name: user.name,
           email: user.email,
-          role: user.role
+          role: user.role,
         },
-        tokens: {
-          accessToken,
-          refreshToken
-        }
-      }
+        token,
+      },
     });
   } catch (error) {
     console.error('Register error:', error);
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
 
 const login = async (req, res) => {
   try {
+    console.log('Login called');
     const { email, password } = req.body;
-    
-    // Find user with password
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and password are required',
+      });
+    }
+
     const user = await User.findOne({ email }).select('+password');
-    
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid email or password'
+        message: 'Invalid credentials',
       });
     }
-    
-    // Check password
-    const isPasswordValid = await user.comparePassword(password);
-    
-    if (!isPasswordValid) {
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid email or password'
+        message: 'Invalid credentials',
       });
     }
-    
-    // Update last login
-    user.lastLogin = Date.now();
+
+    user.lastLogin = new Date();
     await user.save();
-    
-    // Generate tokens
-    const { accessToken, refreshToken } = generateTokens(user._id, user.role);
-    
+
+    const token = generateToken(user._id);
+
     res.json({
       success: true,
       message: 'Login successful',
@@ -91,24 +108,43 @@ const login = async (req, res) => {
           id: user._id,
           name: user.name,
           email: user.email,
-          role: user.role
+          role: user.role,
         },
-        tokens: {
-          accessToken,
-          refreshToken
-        }
-      }
+        token,
+      },
     });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
+    });
+  }
+};
+
+const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select('-password');
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+    res.json({
+      success: true,
+      data: { user },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };
 
 module.exports = {
   register,
-  login
+  login,
+  getMe,
 };

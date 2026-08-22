@@ -35,5 +35,37 @@ const productSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Add to productSchema
+sellerId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'User',
+  default: null
+},
+isReseller: {
+  type: Boolean,
+  default: false
+},
+resellerPrice: {
+  type: Number,
+  default: null
+},
+commission: {
+  type: Number,
+  default: 0
+},
+ratings: {
+  average: { type: Number, default: 0 },
+  count: { type: Number, default: 0 }
+},
+images: [{
+  type: String,
+  default: []
+}],
+imageUrl: {
+  type: String,
+  default: ''
+},
+
+
 // Remove any pre-save middleware - just export the model
 module.exports = mongoose.model('Product', productSchema);

@@ -34,6 +34,16 @@ app.get('/health', (req, res) => {
   });
 });
 
+// TEST ROUTE - No middleware
+app.post('/test-auth', (req, res) => {
+  console.log('Test route hit!');
+  res.json({
+    success: true,
+    message: 'Test route works!',
+    body: req.body
+  });
+});
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
@@ -47,7 +57,7 @@ app.get('/', (req, res) => {
 });
 
 // API routes
-// app.use('/api/v1/auth', require('./routes/authRoutes')); // Commented out temporarily
+//app.use('/api/v1/auth', require('./routes/authRoutes')); // Commented out temporarily
 
 // Product routes
 app.use('/api/v1/products', require('./routes/productRoutes'));

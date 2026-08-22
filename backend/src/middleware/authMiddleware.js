@@ -1,85 +1,41 @@
-const { verifyAccessToken } = require('../utils/jwtHelper');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const protect = async (req, res, next) => {
   try {
     let token;
-    
+
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     }
-    
+
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'Not authorized. Please log in.'
+        message: 'Not authorized, no token',
       });
     }
-    
-    const decoded = verifyAccessToken(token);
-    
-    if (!decoded) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid or expired token. Please log in again.'
-      });
-    }
-    
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
     const user = await User.findById(decoded.userId).select('-password');
-    
+
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User no longer exists.'
+        message: 'User not found',
       });
     }
-    
-    if (!user.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: 'Your account has been deactivated.'
-      });
-    }
-    
+
     req.user = user;
+    req.userId = user._id;
     next();
   } catch (error) {
+    console.error('Auth middleware error:', error);
     return res.status(401).json({
       success: false,
-      message: 'Not authorized.'
+      message: 'Not authorized, invalid token',
     });
   }
 };
 
-const restrictTo = (...roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({
-        success: false,
-        message: 'You do not have permission to perform this action.'
-      });
-    }
-    next();
-  };
-};
-
-const checkAccountOwnership = (paramIdField = 'id') => {
-  return (req, res, next) => {
-    const targetUserId = req.params[paramIdField];
-    
-    if (req.user.role === 'admin' || req.user._id.toString() === targetUserId) {
-      next();
-    } else {
-      return res.status(403).json({
-        success: false,
-        message: 'You can only access your own account.'
-      });
-    }
-  };
-};
-
-module.exports = {
-  protect,
-  restrictTo,
-  checkAccountOwnership
-};
+module.exports = { protect };
