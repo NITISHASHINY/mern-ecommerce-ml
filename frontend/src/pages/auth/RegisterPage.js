@@ -9,6 +9,7 @@ import {
   Alert,
   InputAdornment,
   IconButton,
+  Divider,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -26,33 +27,6 @@ const RegisterPage = () => {
     password: '',
     confirmPassword: '',
   });
-// Add to RegisterPage
-<Button
-  fullWidth
-  variant="outlined"
-  startIcon={<img src="google-icon.png" alt="Google" />}
-  sx={{ mb: 2 }}
->
-  Sign up with Google
-</Button>
-<Button
-  fullWidth
-  variant="outlined"
-  startIcon={<img src="facebook-icon.png" alt="Facebook" />}
-  sx={{ mb: 2 }}
->
-  Sign up with Facebook
-</Button>
-<Button
-  fullWidth
-  variant="outlined"
-  startIcon={<img src="apple-icon.png" alt="Apple" />}
-  sx={{ mb: 2 }}
->
-  Sign up with Apple
-</Button>
-<Divider>OR</Divider>
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -196,6 +170,32 @@ const RegisterPage = () => {
               {loading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </form>
+
+          <Divider sx={{ my: 3 }}>OR</Divider>
+
+          <Button
+            fullWidth
+            variant="outlined"
+            sx={{ mb: 2, borderRadius: 30 }}
+          >
+            Sign up with Google
+          </Button>
+
+          <Button
+            fullWidth
+            variant="outlined"
+            sx={{ mb: 2, borderRadius: 30 }}
+          >
+            Sign up with Facebook
+          </Button>
+
+          <Button
+            fullWidth
+            variant="outlined"
+            sx={{ mb: 2, borderRadius: 30 }}
+          >
+            Sign up with Apple
+          </Button>
 
           <Box sx={{ textAlign: 'center', mt: 3 }}>
             <Typography variant="body2" color="text.secondary">

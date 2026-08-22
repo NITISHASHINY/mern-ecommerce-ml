@@ -16,6 +16,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@faker-js/faker": "^10.6.0",
     "axios": "^1.15.2",
     "bcryptjs": "^3.0.3",
     "bull": "^4.16.5",
@@ -24,6 +25,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-validator": "^7.3.2",
+    "faker": "^6.6.6",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.5.0",

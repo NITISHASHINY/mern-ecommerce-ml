@@ -9,6 +9,7 @@ import {
   Alert,
   InputAdornment,
   IconButton,
+  Divider,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -36,7 +37,6 @@ const LoginPage = () => {
     setError('');
 
     try {
-      // Mock login - replace with actual API call
       if (formData.email && formData.password) {
         localStorage.setItem('user', JSON.stringify({ email: formData.email, name: 'User' }));
         navigate('/');
@@ -146,6 +146,32 @@ const LoginPage = () => {
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
+
+          <Divider sx={{ my: 3 }}>OR</Divider>
+
+          <Button
+            fullWidth
+            variant="outlined"
+            sx={{ mb: 2, borderRadius: 30 }}
+          >
+            Sign in with Google
+          </Button>
+
+          <Button
+            fullWidth
+            variant="outlined"
+            sx={{ mb: 2, borderRadius: 30 }}
+          >
+            Sign in with Facebook
+          </Button>
+
+          <Button
+            fullWidth
+            variant="outlined"
+            sx={{ mb: 2, borderRadius: 30 }}
+          >
+            Sign in with Apple
+          </Button>
 
           <Box sx={{ textAlign: 'center', mt: 3 }}>
             <Typography variant="body2" color="text.secondary">
