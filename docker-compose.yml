@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6
+    container_name: ecommerce-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret123
+      MONGO_INITDB_DATABASE: ecommerce
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    container_name: ecommerce-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  backend:
+    build: ./backend
+    container_name: ecommerce-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://admin:secret123@mongodb:27017/ecommerce?authSource=admin
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: your-production-jwt-secret-change-this
+      JWT_REFRESH_SECRET: your-production-refresh-secret-change-this
+      FRONTEND_URL: http://localhost:3000
+    depends_on:
+      - mongodb
+      - redis
+
+  ml-service:
+    build: ./ml-service
+    container_name: ecommerce-ml
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      MONGODB_URI: mongodb://admin:secret123@mongodb:27017/ecommerce?authSource=admin
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - mongodb
+      - redis
+
+  frontend:
+    build: ./frontend
+    container_name: ecommerce-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:5000/api/v1
+      REACT_APP_ML_URL: http://localhost:5001
+    depends_on:
+      - backend
+      - ml-service
+
+volumes:
+  mongodb_data:
+  redis_data:

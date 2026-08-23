@@ -18,26 +18,63 @@ app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-
-// Database connection (updated for Mongoose 7+)
+// Database connection
 mongoose.connect(MONGODB_URI)
 .then(() => console.log('MongoDB connected successfully'))
 .catch((err) => console.error('MongoDB connection error:', err.message));
-// API routes placeholder
-app.get('/api/v1/auth', (req, res) => {
-  res.json({ message: 'Auth endpoint - To be implemented on Day 3' });
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
 });
 
-app.get('/api/v1/products', (req, res) => {
-  res.json({ message: 'Products endpoint - To be implemented on Day 4' });
+// TEST ROUTE - No middleware
+app.post('/test-auth', (req, res) => {
+  console.log('Test route hit!');
+  res.json({
+    success: true,
+    message: 'Test route works!',
+    body: req.body
+  });
 });
 
-app.get('/api/v1/users', (req, res) => {
-  res.json({ message: 'Users endpoint - To be implemented on Day 4' });
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to E-commerce API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      api: '/api/v1'
+    }
+  });
 });
 
-app.get('/api/v1/orders', (req, res) => {
-  res.json({ message: 'Orders endpoint - To be implemented on Day 5' });
+// API routes
+//app.use('/api/v1/auth', require('./routes/authRoutes')); // Commented out temporarily
+
+// Product routes
+app.use('/api/v1/products', require('./routes/productRoutes'));
+
+// Order routes
+app.use('/api/v1/orders', require('./routes/orderRoutes'));
+
+// Category routes
+app.use('/api/v1/categories', require('./routes/categoryRoutes'));
+
+// Test route
+app.post('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Test route works!',
+    body: req.body
+  });
 });
 
 // 404 handler
@@ -64,6 +101,7 @@ const server = app.listen(PORT, () => {
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
   console.log(`API base: http://localhost:${PORT}/api/v1`);
+  console.log(`Products API: http://localhost:${PORT}/api/v1/products`);
 });
 
 // Graceful shutdown
@@ -77,3 +115,8 @@ process.on('SIGTERM', () => {
     });
   });
 });
+
+// Payment routes
+app.use('/api/v1/payments', require('./routes/paymentRoutes'));
+// Review routes
+app.use('/api/v1/reviews', require('./routes/reviewRoutes'));

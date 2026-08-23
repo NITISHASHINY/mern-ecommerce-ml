@@ -1,0 +1,10 @@
+  develop[m
+* [32mfeature/authentication[m
+  feature/backend-setup[m
+  feature/database-models[m
+  feature/frontend-setup[m
+  feature/ml-service[m
+  feature/order-api[m
+  feature/product-api[m
+  feature/recommendation-engine[m
+  main[m

@@ -1,0 +1,8 @@
+_id,name,description,price,category,sku,inventory,isActive,createdAt,updatedAt,__v,features
+6a3e50bf902b820a58007ff7,Laptop,High performance laptop,1199.99,Electronics,LAP001,{'quantity': 3},True,2026-06-26 10:13:19.444,2026-06-26 11:02:27.327,0,Laptop High performance laptop Electronics
+6a3e50bf902b820a58007ff8,T-Shirt,Cotton t-shirt,29.99,Clothing,TSH001,{'quantity': 50},True,2026-06-26 10:13:19.500,2026-06-26 11:02:34.649,0,T-Shirt Cotton t-shirt Clothing
+6a3e50bf902b820a58007ff9,Book,Programming book,49.99,Books,BK001,{'quantity': 20},True,2026-06-26 10:13:19.539,2026-06-26 11:02:41.998,0,Book Programming book Books
+6a3e50c0902b820a58007ffa,Smartphone,Latest smartphone,899.99,Electronics,PHONE001,{'quantity': 15},True,2026-06-26 10:13:20.319,2026-06-26 11:02:48.294,0,Smartphone Latest smartphone Electronics
+6a646ef3d2f28edd6cb21f88,Fresh Strawberries,Premium organic strawberries,12.99,Fruits,STR001,{'quantity': 50},True,2026-07-25 08:08:19.284,2026-07-25 08:08:19.284,0,Fresh Strawberries Premium organic strawberries Fruits
+6a646ef3d2f28edd6cb21f89,Organic Peaches,Sweet organic peaches,9.99,Fruits,PEA001,{'quantity': 30},True,2026-07-25 08:08:19.370,2026-07-25 08:08:19.370,0,Organic Peaches Sweet organic peaches Fruits
+6a646ef4d2f28edd6cb21f8a,Sweet Cherries,Fresh sweet cherries,14.99,Fruits,CHE001,{'quantity': 25},True,2026-07-25 08:08:20.965,2026-07-25 08:08:20.965,0,Sweet Cherries Fresh sweet cherries Fruits
