@@ -115,3 +115,8 @@ process.on('SIGTERM', () => {
     });
   });
 });
+
+// Payment routes
+app.use('/api/v1/payments', require('./routes/paymentRoutes'));
+// Review routes
+app.use('/api/v1/reviews', require('./routes/reviewRoutes'));

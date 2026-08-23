@@ -32,5 +32,11 @@ export const orderAPI = {
   getById: (id) => api.get(`/orders/${id}`),
   updateStatus: (id, status) => api.put(`/orders/${id}/status`, { status }),
 };
-
 export default api;
+
+// Review API
+export const reviewAPI = {
+  getProductReviews: (productId) => api.get(`/reviews/product/${productId}`),
+  createReview: (data) => api.post('/reviews', data),
+  markHelpful: (id) => api.put(`/reviews/${id}/helpful`),
+};

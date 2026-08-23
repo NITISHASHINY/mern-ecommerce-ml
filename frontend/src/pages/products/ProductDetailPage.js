@@ -284,3 +284,7 @@ const ProductDetailPage = () => {
 };
 
 export default ProductDetailPage;
+import ProductReviews from '../../components/products/ProductReviews';
+
+// Add after "You May Also Like" section:
+<ProductReviews productId={id} />
